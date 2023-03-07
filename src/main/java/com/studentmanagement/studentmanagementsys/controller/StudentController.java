@@ -3,12 +3,10 @@ package com.studentmanagement.studentmanagementsys.controller;
 
 import com.studentmanagement.studentmanagementsys.entity.Student;
 import com.studentmanagement.studentmanagementsys.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +14,7 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
     private final StudentService studentService;
+
 
     public StudentController(StudentService studentService) {
         super();
@@ -40,6 +39,26 @@ public class StudentController {
     @PostMapping
     public String register(@ModelAttribute("student") Student student) {
         studentService.register(student);
+        return "redirect:/students";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editStudentForm(@PathVariable Long id, Model model) {
+        model.addAttribute("student", studentService.getById(id));
+        return "edit_student";
+
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute("student") Student student, Model model) {
+        studentService.update(student, id);
+        return "redirect:/students";
+
+    }
+
+    @GetMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        studentService.delete(id);
         return "redirect:/students";
     }
 
